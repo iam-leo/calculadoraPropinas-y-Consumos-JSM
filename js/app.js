@@ -154,8 +154,14 @@ function agregarPlatillo(producto) {
     //Limpiar el HTML previo
     limpiarHTML();
 
-    //Mostrar el resumen
-    actualizarResumen();
+    //Verificar si hay pedidos para mostrar el resumen o el mensaje de pedido vacio segun corresponda
+    if( cliente.pedido.length ){
+        //Mostrar el resumen
+        actualizarResumen();
+    }else{
+        //Mostrar mensaje pedido vacío
+        mensajePedidoVacio();
+    }
 }
 
 function limpiarHTML() {
@@ -233,15 +239,46 @@ function actualizarResumen() {
         precioValor.textContent = `$${precio}`;
         precioValor.classList.add('fw-normal');
 
+        //HTML para el subtotal
+        const subtotal = document.createElement('p');
+        subtotal.textContent = 'Subtotal: ';
+        subtotal.classList.add('fw-bold');
+
+        const subtotalArt = document.createElement('span');
+        subtotalArt.textContent = calcularSubtotal(precio, cantidad);
+        subtotalArt.classList.add('fw-normal');
+
+        //Boton eliminar articulo del resumen
+        const btnEliminar = document.createElement('button');
+        btnEliminar.classList.add('btn', 'btn-danger', 'd-flex', 'justify-content-center', 'align-items-center', 'text-right');
+        btnEliminar.innerHTML = ` Eliminar
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <line x1="4" y1="7" x2="20" y2="7" />
+            <line x1="10" y1="11" x2="10" y2="17" />
+            <line x1="14" y1="11" x2="14" y2="17" />
+            <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+            <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+        </svg>
+        `;
+
+        //Funcion para eliminar el pedido
+        btnEliminar.onclick = () =>{
+            eliminarArticulo(id);
+        }
+
         //Agregar al contenedor
         cantidadArt.appendChild(cantidadValor);
         precioArt.appendChild(precioValor);
+        subtotal.appendChild(subtotalArt);
 
 
         //Agregar elementos al li
         lista.appendChild(nombreArt);
         lista.appendChild(cantidadArt);
         lista.appendChild(precioArt);
+        lista.appendChild(subtotal);
+        lista.appendChild(btnEliminar)
         grupo.appendChild(lista)
     })
 
@@ -254,4 +291,40 @@ function actualizarResumen() {
     contenido.appendChild(resumen);
 
 
+}
+
+function calcularSubtotal(precio, cantidad){
+    return `$${precio*cantidad}`;
+}
+
+function eliminarArticulo(id) {
+    const { pedido } = cliente;
+
+    const resultado = pedido.filter( articulo => articulo.id !== id);
+    cliente.pedido = [...resultado];
+
+    //Limpiar el HTML previo
+    limpiarHTML();
+
+    //Verificar si hay pedidos para mostrar el resumen o el mensaje de pedido vacio segun corresponda
+    if( cliente.pedido.length ){
+        //Mostrar el resumen
+        actualizarResumen();
+    }else{
+        //Mostrar mensaje pedido vacío
+        mensajePedidoVacio();
+    }
+
+    //Se eliminó el articulo, resetear form a 0
+    const articuloEliminado = `#producto-${id}`;
+    const inputEliminado = document.querySelector(articuloEliminado).value = '';
+}
+
+function mensajePedidoVacio() {
+    const contenido = document.querySelector('#resumen .contenido');
+    const texto = document.createElement('p');
+    texto.classList.add('text-center');
+    texto.textContent = 'Añade los elementos del pedido';
+
+    contenido.appendChild(texto);
 }
