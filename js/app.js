@@ -72,7 +72,7 @@ function obtenerPlatillos() {
 
 function mostrarPlatillos(platillos) {
     const contenido = document.querySelector('#platillos .contenido');
-    
+
     platillos.forEach(platillo => {
         //Extraer Variables
         const { id, nombre, precio, categoria } = platillo;
@@ -151,5 +151,107 @@ function agregarPlatillo(producto) {
         cliente.pedido = [...resultado];
     }
 
-    console.log(cliente.pedido);
+    //Limpiar el HTML previo
+    limpiarHTML();
+
+    //Mostrar el resumen
+    actualizarResumen();
+}
+
+function limpiarHTML() {
+    const contenido = document.querySelector('#resumen .contenido');
+
+    while(contenido.firstChild){
+        contenido.removeChild(contenido.firstChild);
+    }
+}
+
+function actualizarResumen() {
+    const contenido = document.querySelector('#resumen .contenido');
+
+    const resumen = document.createElement('div');
+    resumen.classList.add('col-md-6', 'card', 'py-5', 'px-3', 'shadow');
+
+    //Crear HTML para mostrar la mesa
+    const mesa = document.createElement('p');
+    mesa.textContent = 'Mesa: ';
+    mesa.classList.add('fw-bold');
+
+    const mesaSpan = document.createElement('span');
+    mesaSpan.textContent = cliente.mesa;
+    mesaSpan.classList.add('fw-normal');
+
+    mesa.appendChild(mesaSpan);
+
+    //Crear HTML para mostrar la hora
+    const hora = document.createElement('p');
+    hora.textContent = 'Hora: ';
+    hora.classList.add('fw-bold');
+
+    const horaSpan = document.createElement('span');
+    horaSpan.textContent = cliente.hora;
+    horaSpan.classList.add('fw-normal');
+
+    hora.appendChild(horaSpan);
+
+    //Titulo heading
+    const heading = document.createElement('h3');
+    heading.textContent = 'Platillos Consumidos';
+    heading.classList.add('my-4', 'text-center');
+
+    //Iterar sobre el array de pedidos
+    const grupo = document.createElement('ul');
+    grupo.classList.add('list-group');
+
+    const { pedido } = cliente;
+    pedido.forEach( articulo => {
+        const { nombre, cantidad, precio, id } = articulo;
+
+        //HTML para el nombre del articulo
+        const lista = document.createElement('li');
+        lista.classList.add('list-group-item');
+
+        const nombreArt = document.createElement('h4');
+        nombreArt.classList.add('my-4');
+        nombreArt.textContent = nombre;
+
+        //HTML para la cantidad
+        const cantidadArt = document.createElement('p');
+        cantidadArt.textContent = 'Cantidad: ';
+        cantidadArt.classList.add('fw-bold');
+
+        const cantidadValor = document.createElement('span');
+        cantidadValor.textContent = cantidad;
+        cantidadValor.classList.add('fw-normal');
+
+        //HTML para el precio
+        const precioArt = document.createElement('p');
+        precioArt.textContent = 'Precio: ';
+        precioArt.classList.add('fw-bold');
+
+        const precioValor = document.createElement('span');
+        precioValor.textContent = `$${precio}`;
+        precioValor.classList.add('fw-normal');
+
+        //Agregar al contenedor
+        cantidadArt.appendChild(cantidadValor);
+        precioArt.appendChild(precioValor);
+
+
+        //Agregar elementos al li
+        lista.appendChild(nombreArt);
+        lista.appendChild(cantidadArt);
+        lista.appendChild(precioArt);
+        grupo.appendChild(lista)
+    })
+
+    //Agregar los elementos creados al HTML
+    resumen.appendChild(mesa);
+    resumen.appendChild(hora);
+    resumen.appendChild(heading);
+    resumen.appendChild(grupo)
+
+    contenido.appendChild(resumen);
+
+
 }
