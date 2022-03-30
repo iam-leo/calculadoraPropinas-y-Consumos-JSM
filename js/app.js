@@ -63,7 +63,7 @@ function mostrarSecciones() {
 }
 
 function obtenerPlatillos() {
-    const url = 'http://localhost:4000/platillos';
+    const url = './db.json';
 
     fetch(url)
         .then(respuesta => respuesta.json())
@@ -71,10 +71,10 @@ function obtenerPlatillos() {
         .catch(error => console.log(error))
 }
 
-function mostrarPlatillos(platillos) {
+function mostrarPlatillos(articulos) {
     const contenido = document.querySelector('#platillos .contenido');
 
-    platillos.forEach(platillo => {
+    articulos.platillos.forEach(platillo => {
         //Extraer Variables
         const { id, nombre, precio, categoria } = platillo;
 
