@@ -1,0 +1,14 @@
+body{
+    width: 100%;
+    min-height: 100vh;
+    background-image: url('../img/background_pattern.jpg');
+    background-size: contain;
+    position: relative;
+    padding-bottom: 100px;
+}
+
+footer{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
